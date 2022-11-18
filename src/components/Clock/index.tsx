@@ -1,13 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component, SyntheticEvent } from 'react';
 
 type myProps = {};
 
 type myState = {
   currentTime: Date;
   counter: number;
+  timerID?: number;
 };
 
 class Clock extends Component<myProps, myState> {
+  timerID?: number;
+
   constructor(props: myProps) {
     super(props);
     this.state = {
@@ -18,61 +21,39 @@ class Clock extends Component<myProps, myState> {
 
   componentDidMount(): void {
     console.log('componentDidMount is triggered');
-  }
-
-  shouldComponentUpdate(
-    nextProps: Readonly<myProps>,
-    nextState: Readonly<myState>,
-    nextContext: any
-  ): boolean {
-    console.log('shouldComponentUpdate is triggered');
-    console.log('new props: ', nextProps);
-    console.log('new state: ', nextState);
-    return true;
-  }
-
-  componentWillUpdate(
-    nextProps: Readonly<myProps>,
-    nextState: Readonly<myState>,
-    nextContext: any
-  ): void {
-    console.log('componentWillUpdate is triggered');
-    console.log('new props: ', nextProps);
-    console.log('new state: ', nextState);
-  }
-
-  componentDidUpdate(
-    prevProps: Readonly<myProps>,
-    prevState: Readonly<myState>,
-    snapshot?: any
-  ): void {
-    console.log('componentDidUpdate is triggered');
-    console.log('new props: ', prevProps);
-    console.log('old props: ', prevState);
+    this.timerID = setInterval(() => this.launchClock(), 1000);
+    console.log(this.timerID);
   }
 
   componentWillUnmount(): void {
     console.log('Component will unmount');
+    clearInterval(this.timerID);
+    console.log(this.timerID);
   }
+
+  handleIncrease = (e: SyntheticEvent) => {
+    this.setState((prevState) => ({
+      ...prevState,
+      counter: this.state.counter + 1,
+    }));
+    console.log(this, e);
+  };
 
   launchClock() {
     this.setState({
+      currentTime: new Date(),
       counter: this.state.counter + 1,
     });
   }
 
   render() {
-    console.log('rendering');
-
-    if (this.state.counter > 2) return;
-
     return (
       <div style={{ cursor: 'pointer' }}>
         <h2>It is {this.state.counter}</h2>
-        <button
-          onClick={() => this.setState({ counter: this.state.counter + 1 })}
-        >
-          Increase
+        <h3>{this.state.currentTime.toLocaleString()}</h3>
+        <button onClick={this.handleIncrease}>Increase</button>
+        <button onClick={() => clearInterval(this.timerID)}>
+          Clear interval
         </button>
       </div>
     );
