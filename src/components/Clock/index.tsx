@@ -1,4 +1,4 @@
-import React, { Component, SyntheticEvent } from 'react';
+import React, { Component } from 'react';
 
 type myProps = {};
 
@@ -31,12 +31,11 @@ class Clock extends Component<myProps, myState> {
     console.log(this.timerID);
   }
 
-  handleIncrease = (e: SyntheticEvent) => {
+  handleIncrease = (payload: number) => {
     this.setState((prevState) => ({
       ...prevState,
-      counter: this.state.counter + 1,
+      counter: this.state.counter + payload,
     }));
-    console.log(this, e);
   };
 
   launchClock() {
@@ -51,7 +50,7 @@ class Clock extends Component<myProps, myState> {
       <div style={{ cursor: 'pointer' }}>
         <h2>It is {this.state.counter}</h2>
         <h3>{this.state.currentTime.toLocaleString()}</h3>
-        <button onClick={this.handleIncrease}>Increase</button>
+        <button onClick={this.handleIncrease.bind(this, 3)}>Increase</button>
         <button onClick={() => clearInterval(this.timerID)}>
           Clear interval
         </button>
